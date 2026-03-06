@@ -316,14 +316,16 @@ export default function App({ tabelaNovos, tabelaUsados }) {
             content: [
               { type: "image", source: { type: "base64", media_type: file.type, data: b64 } },
               { type: "text", text: `Este print é um formulário de cotação de iPhone enviado via WhatsApp. Há DUAS seções distintas. Extraia os dados e responda APENAS com JSON puro, sem markdown:
-{"modeloUsado":"iPhone 13","memoriaUsada":"128GB","bateria":77,"modeloNovo":"iPhone 17 Pro","memoriaNova":"256GB","tela":0,"lateral":0,"descascado":0,"defeito":false}
+{"modeloUsado":"iPhone 13","memoriaUsada":"128GB","bateria":77,"marcas":false,"modeloNovo":"iPhone 17 Pro","memoriaNova":"256GB","tela":0,"lateral":0,"descascado":0,"defeito":false}
 
 SEÇÃO 1 - "DETALHES APARELHO USADO" (aparelho que o cliente TEM):
 - modeloUsado: linha "Modelo usado:"
 - memoriaUsada: linha "Memória:" desta seção (ex: "128GB")
 - bateria: número da linha "Bateria:" (só o inteiro, sem %)
+- marcas: true se "Marcas: Sim", false se "Marcas: Não"
 - defeito: true se "Defeito: Sim", false se "Defeito: Não"
 - Se "Marcas: Não" → tela=0, lateral=0
+- Se "Marcas: Sim" → tela=100, lateral=0 (detalhes serão preenchidos manualmente)
 
 SEÇÃO 2 - "APARELHO PRETENDIDO" (aparelho que o cliente QUER comprar):
 - modeloNovo: linha "Modelo:" desta seção (ex: "iPhone 17 Pro")
@@ -363,6 +365,10 @@ Formato modelo: "iPhone 13", "iPhone 17 Pro", "iPhone 17 Pro Max". Memória sem 
         defeito:  json.defeito ? "sim" : "nao",
         garantia: "nao",
       });
+      // Se tem marcas, abre modal automaticamente para detalhar
+      if (json.marcas === true || json.tela > 0 || json.lateral > 0) {
+        setTimeout(() => setModalOpen(true), 400);
+      }
     } catch (e) {
       setIaError("Não foi possível ler o print. Preencha manualmente.");
     }
