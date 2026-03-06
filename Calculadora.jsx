@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 const FontLink = () => (
   <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap');
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#0d0d0d}
+  body{background:#f5f5f7}
   input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;outline:none;cursor:pointer}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;cursor:pointer}
   @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
@@ -112,8 +112,8 @@ async function fileToBase64(file) {
 
 /* ─── CORES / ESTILOS BASE ───────────────────────────────────────────────── */
 const C = {
-  bg: "#0d0d0d", card: "#161616", orange: "#FF6B00", orangeDim: "rgba(255,107,0,0.15)",
-  border: "rgba(255,107,0,0.18)", text: "#f0f0f0", muted: "#888", faint: "#333",
+  bg: "#f5f5f7", card: "#ffffff", orange: "#FF6B00", orangeDim: "rgba(255,107,0,0.15)",
+  border: "rgba(255,107,0,0.25)", text: "#f5f5f7", muted: "#666", faint: "#e0e0e0",
 };
 
 const base = {
@@ -152,7 +152,7 @@ function Chip({ active, children, onClick, color }) {
 function Select({ value, onChange, options, placeholder }) {
   return (
     <select value={value} onChange={e => onChange(e.target.value)} style={{
-      width: "100%", padding: "11px 14px", background: "#1a1a1a",
+      width: "100%", padding: "11px 14px", background: "#f5f5f7",
       border: `1px solid ${C.faint}`, borderRadius: 10, color: value ? C.text : C.muted,
       fontSize: 14, fontFamily: "inherit", outline: "none", cursor: "pointer",
     }}>
@@ -177,7 +177,7 @@ function Modal({ conds, onChange, onClose, modeloUsado }) {
     }} onClick={onClose}>
       <div onClick={e => e.stopPropagation()} style={{
         width: "100%", maxWidth: 480, margin: "0 auto",
-        background: "#1a1a1a", borderRadius: "24px 24px 0 0",
+        background: "#f5f5f7", borderRadius: "24px 24px 0 0",
         padding: "0 20px 40px", animation: "slideUp .3s ease",
         maxHeight: "85vh", overflowY: "auto",
         border: `1px solid ${C.border}`, borderBottom: "none",
@@ -426,7 +426,7 @@ Se você tiver outro aparelho em boas condições, ou se preferir comprar à vis
               border: `2px dashed ${iaLoading ? C.orange : C.faint}`,
               borderRadius: 12, padding: "24px 16px", textAlign: "center",
               cursor: "pointer", transition: "border-color .2s",
-              background: imgPreview ? "transparent" : "#0d0d0d",
+              background: imgPreview ? "transparent" : "#fafafa",
             }}
           >
             {iaLoading ? (
@@ -529,7 +529,7 @@ Se você tiver outro aparelho em boas condições, ou se preferir comprar à vis
               {/* Botão condições */}
               <button onClick={() => setModalOpen(true)} style={{
                 width: "100%", marginTop: 14, padding: "12px",
-                background: "#1e1e1e", border: `1px solid ${C.faint}`,
+                background: "#efefef", border: `1px solid ${C.faint}`,
                 borderRadius: 10, color: C.text, fontSize: 14,
                 cursor: "pointer", fontFamily: "inherit", display: "flex",
                 alignItems: "center", justifyContent: "center", gap: 8,
@@ -568,7 +568,7 @@ Se você tiver outro aparelho em boas condições, ou se preferir comprar à vis
           <div style={{ animation: "fadeUp .3s ease" }}>
             {/* Hero diferença */}
             <div style={{
-              background: `linear-gradient(135deg, #1a0a00, #2a1000)`,
+              background: "linear-gradient(135deg, #fff3e8, #ffe0c0)",
               border: `1.5px solid ${C.border}`,
               borderTop: `2px solid ${C.orange}`,
               borderRadius: 16, padding: "24px 20px", marginBottom: 16, textAlign: "center",
@@ -614,7 +614,7 @@ Se você tiver outro aparelho em boas condições, ou se preferir comprar à vis
                 ].map(([l, parc, total, hl]) => (
                   <div key={l} style={{
                     padding: "14px 12px", borderRadius: 12, textAlign: "center",
-                    background: hl ? C.orangeDim : "#1a1a1a",
+                    background: hl ? C.orangeDim : "#f5f5f7",
                     border: hl ? `1.5px solid ${C.orange}` : `1px solid ${C.faint}`,
                   }}>
                     <div style={{ fontSize: 11, color: C.muted, marginBottom: 4 }}>{l}</div>
@@ -629,9 +629,9 @@ Se você tiver outro aparelho em boas condições, ou se preferir comprar à vis
             <Card>
               <Label>📲 Mensagem WhatsApp</Label>
               <pre style={{
-                fontFamily: "inherit", fontSize: 12, lineHeight: 1.7, color: "#ccc",
+                fontFamily: "inherit", fontSize: 12, lineHeight: 1.7, color: "#444",
                 whiteSpace: "pre-wrap", wordBreak: "break-word",
-                background: "#0d0d0d", borderRadius: 10, padding: 14,
+                background: "#f0f0f0", borderRadius: 10, padding: 14,
                 border: `1px solid ${C.faint}`, maxHeight: 220, overflowY: "auto",
               }}>{msgWpp()}</pre>
               <CopyBox text={msgWpp()} label="📋 Copiar mensagem" style={{ marginTop: 10 }} />
@@ -669,7 +669,7 @@ function CopyBox({ text, label, style = {} }) {
     <button onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
       style={{
         width: "100%", padding: "12px",
-        background: copied ? "rgba(34,197,94,.1)" : "#1a1a1a",
+        background: copied ? "rgba(34,197,94,.1)" : "#f5f5f7",
         border: `1px solid ${copied ? "rgba(34,197,94,.4)" : "rgba(255,107,0,.3)"}`,
         borderRadius: 10, color: copied ? "#22c55e" : "#FF6B00",
         fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
