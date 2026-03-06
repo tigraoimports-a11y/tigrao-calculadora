@@ -60,9 +60,9 @@ const BLOQUEADOS = ["iPhone 6","iPhone 7","iPhone 7 Plus","iPhone 8","iPhone 8 P
 const fmtBR = n => n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtInt = n => Math.round(n).toLocaleString("pt-BR");
 
-function calcResult(modeloNovo, memNovo, modeloUsado, memUsado, bateria, conds, NOVOS) {
+function calcResult(modeloNovo, memNovo, modeloUsado, memUsado, bateria, conds, NOVOS, USADOS_P) {
   const novoData = NOVOS?.[modeloNovo]?.[memNovo];
-  const usadoBase = USADOS[modeloUsado]?.[memUsado];
+  const usadoBase = USADOS_P?.[modeloUsado]?.[memUsado];
   if (!novoData || !usadoBase) return null;
 
   // Bateria
@@ -152,8 +152,8 @@ function Chip({ active, children, onClick, color }) {
 function Select({ value, onChange, options, placeholder }) {
   return (
     <select value={value} onChange={e => onChange(e.target.value)} style={{
-      width: "100%", padding: "11px 14px", background: "#f5f5f7",
-      border: `1px solid ${C.faint}`, borderRadius: 10, color: value ? C.text : C.muted,
+      width: "100%", padding: "11px 14px", background: "#ffffff",
+      border: `1px solid ${C.faint}`, borderRadius: 10, color: value ? "#1a1a1a" : C.muted,
       fontSize: 14, fontFamily: "inherit", outline: "none", cursor: "pointer",
     }}>
       <option value="">{placeholder}</option>
@@ -247,8 +247,9 @@ function CondGroup({ label, children }) {
 }
 
 /* ─── APP PRINCIPAL ──────────────────────────────────────────────────────── */
-export default function App({ tabelaNovos }) {
-  const NOVOS = tabelaNovos || {};
+export default function App({ tabelaNovos, tabelaUsados }) {
+  const NOVOS  = tabelaNovos || {};
+  const USADOS_LIVE = tabelaUsados || USADOS;
   // Produto novo
   const [modeloNovo, setModeloNovo] = useState("");
   const [memNovo, setMemNovo]       = useState("");
@@ -269,8 +270,8 @@ export default function App({ tabelaNovos }) {
   const fileRef = useRef();
 
   const bloqueado = BLOQUEADOS.some(b => modeloUsado.toLowerCase().includes(b.toLowerCase()));
-  const memNovoOpts  = modeloNovo ? Object.keys(NOVOS[modeloNovo] || {}) : [];
-  const memUsadoOpts = modeloUsado ? Object.keys(USADOS[modeloUsado] || {}) : [];
+  const memNovoOpts  = modeloNovo  ? Object.keys(NOVOS[modeloNovo]  || {}) : [];
+  const memUsadoOpts = modeloUsado ? Object.keys(USADOS_LIVE[modeloUsado] || {}) : [];
   const temBatDesc   = BAT_DESC[modeloUsado] !== undefined;
 
   // Cor slider bateria
@@ -290,7 +291,7 @@ export default function App({ tabelaNovos }) {
   const canCalc = modeloNovo && memNovo && modeloUsado && memUsado && !bloqueado && conds.defeito !== "sim";
 
   function calcular() {
-    const r = calcResult(modeloNovo, memNovo, modeloUsado, memUsado, bateria, conds, NOVOS);
+    const r = calcResult(modeloNovo, memNovo, modeloUsado, memUsado, bateria, conds, NOVOS, USADOS_LIVE);
     setResult(r);
   }
 
@@ -314,9 +315,21 @@ export default function App({ tabelaNovos }) {
             role: "user",
             content: [
               { type: "image", source: { type: "base64", media_type: file.type, data: b64 } },
-              { type: "text", text: `Leia este print de formulário de troca de iPhone. Responda APENAS com JSON válido neste formato exato:
-{"modeloUsado":"iPhone 14","memoriaUsada":"256GB","bateria":100,"modeloNovo":"iPhone 17 Pro","memoriaNova":"256GB","tela":0,"lateral":0,"descascado":0,"defeito":false}
-tela/lateral: 0=nenhum,100=1 arranhão,250=2+. descascado: 0=sem,200=leve,300=muito. defeito: true/false. Se não encontrar algum campo, use o valor padrão/zero.` }
+              { type: "text", text: `Leia este print de formulário de troca de iPhone da TigrãoImports. Responda APENAS com JSON válido neste formato exato, sem texto adicional:
+{"modeloUsado":"iPhone 13","memoriaUsada":"128GB","bateria":77,"modeloNovo":"iPhone 17 Pro","memoriaNova":"256GB","tela":0,"lateral":0,"descascado":0,"defeito":false}
+
+Regras de extração:
+- modeloUsado: campo "Modelo usado" ou "Aparelho"
+- memoriaUsada: campo "Memória" do aparelho usado
+- bateria: número do campo "Bateria" (só o número, sem %)
+- modeloNovo: campo "Modelo" ou "Aparelho Pretendido"
+- memoriaNova: memória do aparelho novo
+- tela: 0=nenhum arranhão, 100=1 arranhão, 250=2 ou mais
+- lateral: 0=nenhum, 100=1, 250=2+
+- descascado: 0=sem, 200=leve, 300=muito
+- defeito: true se campo "Defeito" for Sim, false se Não
+- Se campo "Marcas" for Não, tela=0 e lateral=0
+- Se não encontrar um campo, use valor padrão (0 ou false)` }
             ]
           }]
         })
@@ -493,7 +506,7 @@ Se você tiver outro aparelho em boas condições, ou se preferir comprar à vis
         <Card>
           <Label>🔄 Aparelho do Cliente</Label>
           <div style={{ display: "grid", gap: 10 }}>
-            <Select value={modeloUsado} onChange={v => { setModeloUsado(v); setMemUsado(""); }} options={Object.keys(USADOS)} placeholder="Selecione o modelo usado" />
+            <Select value={modeloUsado} onChange={v => { setModeloUsado(v); setMemUsado(""); }} options={Object.keys(USADOS_LIVE)} placeholder="Selecione o modelo usado" />
             {modeloUsado && (
               <Select value={memUsado} onChange={setMemUsado} options={memUsadoOpts} placeholder="Selecione a memória" />
             )}
