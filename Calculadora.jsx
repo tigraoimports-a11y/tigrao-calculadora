@@ -305,7 +305,7 @@ export default function App({ tabelaNovos, tabelaUsados }) {
     setImgPreview(URL.createObjectURL(file));
     try {
       const b64 = await fileToBase64(file);
-      const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      const resp = await fetch("/api/proxy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
