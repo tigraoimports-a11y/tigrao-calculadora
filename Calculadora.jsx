@@ -60,8 +60,8 @@ const BLOQUEADOS = ["iPhone 6","iPhone 7","iPhone 7 Plus","iPhone 8","iPhone 8 P
 const fmtBR = n => n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtInt = n => Math.round(n).toLocaleString("pt-BR");
 
-function calcResult(modeloNovo, memNovo, modeloUsado, memUsado, bateria, conds) {
-  const novoData = NOVOS[modeloNovo]?.[memNovo];
+function calcResult(modeloNovo, memNovo, modeloUsado, memUsado, bateria, conds, NOVOS) {
+  const novoData = NOVOS?.[modeloNovo]?.[memNovo];
   const usadoBase = USADOS[modeloUsado]?.[memUsado];
   if (!novoData || !usadoBase) return null;
 
@@ -290,7 +290,7 @@ export default function App({ tabelaNovos }) {
   const canCalc = modeloNovo && memNovo && modeloUsado && memUsado && !bloqueado && conds.defeito !== "sim";
 
   function calcular() {
-    const r = calcResult(modeloNovo, memNovo, modeloUsado, memUsado, bateria, conds);
+    const r = calcResult(modeloNovo, memNovo, modeloUsado, memUsado, bateria, conds, NOVOS);
     setResult(r);
   }
 
