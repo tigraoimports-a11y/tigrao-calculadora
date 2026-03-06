@@ -28,17 +28,17 @@ async function storageSet(key, val) {
 }
 
 /* ── Estilos ─────────────────────────────────────────────────────────────── */
-const C = { bg:"#0d0d0d", card:"#161616", orange:"#FF6B00", border:"rgba(255,107,0,0.18)", text:"#f0f0f0", muted:"#888", faint:"#2a2a2a" };
+const C = { bg:"#f5f5f7", card:"#ffffff", orange:"#FF6B00", border:"rgba(255,107,0,0.18)", text:"#1a1a1a", muted:"#666", faint:"#e0e0e0" };
 
 const S = {
   page:     { minHeight:"100vh", background:C.bg, fontFamily:"'Syne',-apple-system,sans-serif", color:C.text },
-  tabBar:   { display:"flex", background:"#111", borderBottom:`1px solid ${C.faint}`, position:"sticky", top:0, zIndex:20 },
+  tabBar:   { display:"flex", background:"#f5f5f7", borderBottom:`1px solid ${C.faint}`, position:"sticky", top:0, zIndex:20 },
   tab:      a => ({ flex:1, padding:"14px 0", background:"transparent", border:"none", borderBottom: a?`2px solid ${C.orange}`:"2px solid transparent", color: a?C.orange:C.muted, fontSize:13, fontWeight:600, cursor:"pointer", fontFamily:"inherit", transition:"all .15s" }),
   card:     { background:C.card, borderRadius:14, border:`1px solid ${C.faint}`, borderTop:`2px solid ${C.orange}`, padding:16, marginBottom:12 },
   lbl:      { fontSize:11, color:C.muted, textTransform:"uppercase", letterSpacing:"1px", marginBottom:8, fontWeight:600 },
-  input:    { width:"100%", padding:"10px 12px", background:"#111", border:`1px solid ${C.faint}`, borderRadius:10, color:C.text, fontSize:13, fontFamily:"inherit", outline:"none", boxSizing:"border-box" },
+  input:    { width:"100%", padding:"10px 12px", background:"#f5f5f7", border:`1px solid ${C.faint}`, borderRadius:10, color:C.text, fontSize:13, fontFamily:"inherit", outline:"none", boxSizing:"border-box" },
   btnOr:    { width:"100%", padding:"13px", background:`linear-gradient(135deg,${C.orange},#ff9500)`, border:"none", borderRadius:11, color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit", boxShadow:"0 4px 14px rgba(255,107,0,.3)" },
-  btnSm:    { padding:"7px 13px", background:"#1a1a1a", border:`1px solid ${C.faint}`, borderRadius:8, color:C.muted, fontSize:12, cursor:"pointer", fontFamily:"inherit" },
+  btnSm:    { padding:"7px 13px", background:"#f0f0f0", border:`1px solid ${C.faint}`, borderRadius:8, color:C.muted, fontSize:12, cursor:"pointer", fontFamily:"inherit" },
   btnDel:   { padding:"7px 10px", background:"rgba(239,68,68,.1)", border:"1px solid rgba(239,68,68,.25)", borderRadius:8, color:"#ef4444", fontSize:12, cursor:"pointer", fontFamily:"inherit" },
 };
 
@@ -144,7 +144,7 @@ function TabPrecos({ novos, onSave, saved }) {
         {saved ? "✓ Salvo com sucesso!" : "💾 Salvar alterações"}
       </button>
 
-      <div style={{ fontSize:12, color:C.muted, marginBottom:16, padding:"10px 12px", background:"#111", borderRadius:10, border:`1px solid ${C.faint}` }}>
+      <div style={{ fontSize:12, color:C.muted, marginBottom:16, padding:"10px 12px", background:"#f5f5f7", borderRadius:10, border:`1px solid ${C.faint}` }}>
         💡 Edite os preços abaixo e clique em <strong style={{color:C.text}}>Salvar alterações</strong>. A calculadora atualiza na hora.
       </div>
 
@@ -160,7 +160,7 @@ function TabPrecos({ novos, onSave, saved }) {
             return (
               <div key={mem} style={{ marginBottom: isEditing ? 14 : 8 }}>
                 {isEditing ? (
-                  <div style={{ background:"#111", borderRadius:10, padding:12, border:`1px solid ${C.orange}` }}>
+                  <div style={{ background:"#f5f5f7", borderRadius:10, padding:12, border:`1px solid ${C.orange}` }}>
                     <div style={{ fontWeight:700, marginBottom:10, color:C.orange }}>{mem}</div>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:8 }}>
                       <div>
@@ -184,7 +184,7 @@ function TabPrecos({ novos, onSave, saved }) {
                     </div>
                   </div>
                 ) : (
-                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"8px 10px", background:"#111", borderRadius:10 }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"8px 10px", background:"#f5f5f7", borderRadius:10 }}>
                     <div>
                       <span style={{ fontSize:13, fontWeight:600, color:C.text }}>{mem}</span>
                       <span style={{ fontSize:13, color:C.orange, marginLeft:10, fontFamily:"monospace" }}>R$ {fmtInt(vals.pix)}</span>
