@@ -113,7 +113,7 @@ async function fileToBase64(file) {
 /* ─── CORES / ESTILOS BASE ───────────────────────────────────────────────── */
 const C = {
   bg: "#f5f5f7", card: "#ffffff", orange: "#FF6B00", orangeDim: "rgba(255,107,0,0.15)",
-  border: "rgba(255,107,0,0.25)", text: "#f5f5f7", muted: "#666", faint: "#e0e0e0",
+  border: "rgba(255,107,0,0.25)", text: "#1a1a1a", muted: "#666", faint: "#e0e0e0",
 };
 
 const base = {
@@ -315,34 +315,46 @@ export default function App({ tabelaNovos, tabelaUsados }) {
             role: "user",
             content: [
               { type: "image", source: { type: "base64", media_type: file.type, data: b64 } },
-              { type: "text", text: `Leia este print de formulário de troca de iPhone da TigrãoImports. Responda APENAS com JSON válido neste formato exato, sem texto adicional:
+              { type: "text", text: `Este print é um formulário de cotação de iPhone enviado via WhatsApp. Há DUAS seções distintas. Extraia os dados e responda APENAS com JSON puro, sem markdown:
 {"modeloUsado":"iPhone 13","memoriaUsada":"128GB","bateria":77,"modeloNovo":"iPhone 17 Pro","memoriaNova":"256GB","tela":0,"lateral":0,"descascado":0,"defeito":false}
 
-Regras de extração:
-- modeloUsado: campo "Modelo usado" ou "Aparelho"
-- memoriaUsada: campo "Memória" do aparelho usado
-- bateria: número do campo "Bateria" (só o número, sem %)
-- modeloNovo: campo "Modelo" ou "Aparelho Pretendido"
-- memoriaNova: memória do aparelho novo
-- tela: 0=nenhum arranhão, 100=1 arranhão, 250=2 ou mais
-- lateral: 0=nenhum, 100=1, 250=2+
-- descascado: 0=sem, 200=leve, 300=muito
-- defeito: true se campo "Defeito" for Sim, false se Não
-- Se campo "Marcas" for Não, tela=0 e lateral=0
-- Se não encontrar um campo, use valor padrão (0 ou false)` }
+SEÇÃO 1 - "DETALHES APARELHO USADO" (aparelho que o cliente TEM):
+- modeloUsado: linha "Modelo usado:"
+- memoriaUsada: linha "Memória:" desta seção (ex: "128GB")
+- bateria: número da linha "Bateria:" (só o inteiro, sem %)
+- defeito: true se "Defeito: Sim", false se "Defeito: Não"
+- Se "Marcas: Não" → tela=0, lateral=0
+
+SEÇÃO 2 - "APARELHO PRETENDIDO" (aparelho que o cliente QUER comprar):
+- modeloNovo: linha "Modelo:" desta seção (ex: "iPhone 17 Pro")
+- memoriaNova: linha "Memória:" desta seção (ex: "256GB", "256 GB" → use "256GB")
+
+Formato modelo: "iPhone 13", "iPhone 17 Pro", "iPhone 17 Pro Max". Memória sem espaço: "128GB", "256GB", "512GB", "1TB".` }
             ]
           }]
         })
       });
       const data = await resp.json();
       const text = data.content?.find(b => b.type === "text")?.text || "";
+      console.log("IA raw response:", text);
       const json = JSON.parse(text.replace(/```json|```/g, "").trim());
+      console.log("IA parsed JSON:", JSON.stringify(json));
+
+      // Fuzzy match: encontra o modelo mais próximo na tabela
+      const fuzzyMatch = (nome, tabela) => {
+        if (!nome) return null;
+        const normalizar = s => s.toLowerCase().replace(/\s+/g,"");
+        const exact = Object.keys(tabela).find(k => k === nome);
+        if (exact) return exact;
+        const norm = normalizar(nome);
+        return Object.keys(tabela).find(k => normalizar(k) === norm) || null;
+      };
 
       // Preencher campos
-      if (json.modeloNovo && NOVOS[json.modeloNovo]) setModeloNovo(json.modeloNovo);
-      if (json.memoriaNova) setMemNovo(json.memoriaNova);
-      if (json.modeloUsado && USADOS[json.modeloUsado]) setModeloUsado(json.modeloUsado);
-      if (json.memoriaUsada) setMemUsado(json.memoriaUsada);
+      const modeloNovoMatch = fuzzyMatch(json.modeloNovo, NOVOS);
+      if (modeloNovoMatch) { setModeloNovo(modeloNovoMatch); if (json.memoriaNova) setMemNovo(json.memoriaNova.replace(/\s/g,"")); }
+      const modeloUsadoMatch = fuzzyMatch(json.modeloUsado, USADOS_LIVE);
+      if (modeloUsadoMatch) { setModeloUsado(modeloUsadoMatch); if (json.memoriaUsada) setMemUsado(json.memoriaUsada.replace(/\s/g,"")); }
       if (json.bateria) setBateria(json.bateria);
       setConds({
         tela:     json.tela === 100 ? "1" : json.tela >= 250 ? "2" : "0",
