@@ -365,9 +365,9 @@ Formato modelo: "iPhone 13", "iPhone 17 Pro", "iPhone 17 Pro Max". Memória sem 
         defeito:  json.defeito ? "sim" : "nao",
         garantia: "nao",
       });
-      // Se tem marcas, abre modal automaticamente para detalhar
-      if (json.marcas === true || json.tela > 0 || json.lateral > 0) {
-        setTimeout(() => setModalOpen(true), 400);
+      // Se tem marcas, já aplica 1 arranhão na tela automaticamente (sem abrir modal)
+      if (json.marcas === true) {
+        setConds(prev => ({ ...prev, tela: "1" }));
       }
     } catch (e) {
       setIaError("Não foi possível ler o print. Preencha manualmente.");
